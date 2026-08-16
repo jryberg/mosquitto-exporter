@@ -6,7 +6,7 @@ require (
 	github.com/eclipse/paho.mqtt.golang v1.5.0
 	github.com/prometheus/client_golang v1.23.0
 	github.com/sirupsen/logrus v1.9.3
-	github.com/urfave/cli/v3 v3.4.1
+	github.com/urfave/cli/v3 v3.11.0
 )
 
 require (
