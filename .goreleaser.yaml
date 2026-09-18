@@ -2,6 +2,8 @@ version: 2
 project_name: mosquitto-exporter
 builds:
   - env: [CGO_ENABLED=0]
+    ldflags:
+      - -s -w -X main.Version={{ .Tag }}
     goos:
       - linux
       - windows

@@ -1,4 +1,4 @@
-FROM golang:1.24-bookworm AS build
+FROM golang:1.24-bookworm@sha256:1a6d4452c65dea36aac2e2d606b01b4a029ec90cc1ae53890540ce6173ea77ac AS build
 
 WORKDIR /go/src/app
 
@@ -11,7 +11,7 @@ COPY . .
 
 RUN make build
 
-FROM debian:trixie-slim
+FROM debian:trixie-slim@sha256:d7e12182ce18b85b93007c1dedf31f2d29e01ccf3182cc4017c709b6259bc132
 LABEL source_repository="https://github.com/jryberg/mosquitto-exporter"
 
 COPY --from=build /go/src/app/bin/mosquitto_exporter /mosquitto_exporter

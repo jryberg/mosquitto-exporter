@@ -1,15 +1,15 @@
-PKG_NAME:=github.com/sapcc/mosquitto-exporter
+PKG_NAME:=github.com/jryberg/mosquitto-exporter
 BUILD_DIR:=bin
 MOSQUITTO_EXPORTER_BINARY:=$(BUILD_DIR)/mosquitto_exporter
-IMAGE := sapcc/mosquitto-exporter
-VERSION=0.8.0
-LDFLAGS=-s -w -X main.Version=$(VERSION) -X main.GITCOMMIT=`git rev-parse --short HEAD`
+IMAGE := jryberg/mosquitto-exporter
+VERSION ?= $(shell git describe --tags --always --dirty 2>/dev/null || echo dev)
+LDFLAGS=-s -w -X main.Version=$(VERSION)
 .PHONY: help
 help:
 	@echo
 	@echo "Available targets:"
-	@echo "  * build             - build the binary, output to $(ARC_BINARY)"
-	@echo "  * linux             - build the binary, output to $(ARC_BINARY)"
+	@echo "  * build             - build the binary, output to $(MOSQUITTO_EXPORTER_BINARY)"
+	@echo "  * linux             - build the binary, output to $(MOSQUITTO_EXPORTER_BINARY)"
 	@echo "  * docker            - build docker image"
 
 .PHONY: build
