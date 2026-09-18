@@ -186,6 +186,14 @@ func runServer(ctx context.Context, cmd *cli.Command) error {
 		if err := token.Error(); err != nil {
 			log.Errorf("Failed to subscribe to topic $SYS/#: %s", err)
 		}
+		// paho does not report a rejected subscription (SUBACK 0x80) as an error
+		if st, ok := token.(*mqtt.SubscribeToken); ok {
+			for topic, code := range st.Result() {
+				if code == 0x80 {
+					log.Errorf("Subscription to topic %s was denied by the broker, check ACL for user %s", topic, cmd.String("user"))
+				}
+			}
+		}
 	}
 	opts.OnConnectionLost = func(client mqtt.Client, err error) {
 		if cmd.Bool("reset-metrics") {
