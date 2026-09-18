@@ -11,23 +11,12 @@ builds:
     goarch:
       - amd64
       - arm64
-dockers:
-- image_templates: ["jryberg/mosquitto-exporter:{{ .Tag }}-amd64"]
-  use: buildx
-  build_flag_templates:
-  - "--pull"
-  - "--platform=linux/amd64"
-- image_templates: ["jryberg/mosquitto-exporter:{{ .Tag }}-arm64"]
-  use: buildx
-  build_flag_templates:
-  - "--pull"
-  - "--platform=linux/arm64"
-  goarch: arm64
-docker_manifests:
-- name_template: 'jryberg/mosquitto-exporter:{{ .Tag }}'
-  image_templates:
-  - 'jryberg/mosquitto-exporter:{{ .Tag }}-amd64'
-  - 'jryberg/mosquitto-exporter:{{ .Tag }}-arm64'
+dockers_v2:
+- images: ["jryberg/mosquitto-exporter"]
+  tags: ["{{ .Tag }}"]
+  platforms:
+  - linux/amd64
+  - linux/arm64
 changelog:
   groups:
     - title: Features
