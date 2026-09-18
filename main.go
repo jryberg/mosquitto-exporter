@@ -41,7 +41,8 @@ var (
 		"$SYS/broker/publish/messages/dropped":  "The total number of PUBLISH messages that have been dropped due to inflight/queuing limits.",
 		"$SYS/broker/uptime":                    "The total number of seconds since the broker started.",
 		"$SYS/broker/clients/maximum":           "The maximum number of clients connected simultaneously since the broker started",
-		"$SYS/broker/clients/total":             "The total number of clients connected since the broker started.",
+		"$SYS/broker/clients/expired":           "The number of disconnected persistent clients that have been expired and removed through the persistent_client_expiration option.",
+		"$SYS/broker/connections/socket/count":  "The total number of socket connections made to the broker since it started, whether or not the MQTT connection succeeded.",
 	}
 	counterMetrics = map[string]*MosquittoCounter{}
 	gaugeMetrics   = map[string]prometheus.Gauge{}
