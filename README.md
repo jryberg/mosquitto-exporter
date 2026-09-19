@@ -44,3 +44,30 @@ GLOBAL OPTIONS:
    --help, -h                      show help
    --version, -v                   print the version
 ```
+
+Grafana dashboard:
+======
+
+[`grafana/mosquitto-dashboard.json`](grafana/mosquitto-dashboard.json) is a ready-made dashboard for these metrics.
+
+To use it, open **Dashboards → New → Import** in Grafana and upload the file, or put it in a
+[provisioning](https://grafana.com/docs/grafana/latest/administration/provisioning/#dashboards) folder.
+It picks the Prometheus data source from a dashboard variable, so it needs no editing.
+
+The exporter's metrics have no labels of their own, so a broker is picked by its scrape labels:
+
+- **Job** and **Instance** select the scrape target. When several brokers are selected, the panels show their total.
+- **Filters** takes any other label your Prometheus adds, for example `kubernetes_namespace = mosquitto`.
+
+The rows are:
+
+- **Overview:** exporter state, uptime, clients, subscriptions, message rates, retained messages and dropped publishes.
+- **Clients and subscriptions:** connected and persistent sessions, new connections per second (shows reconnect loops), subscriptions and expired sessions.
+- **Throughput:** messages, bytes and PUBLISH traffic with sent above zero and received below, dropped messages, average payload size and payload share of traffic.
+- **Broker load averages:** the broker's own 1, 5 and 15 minute averages.
+- **Message store and memory:** heap, stored and retained messages, and the outgoing packet queue.
+- **Exporter process:** the exporter's own memory, CPU and scrape health (collapsed).
+
+With `--reset-metrics` (the default) the exporter sets every metric to 0 when it loses the broker.
+The dashboard marks that period with an annotation. Expect a one-off spike in the rate panels when
+the connection comes back, because the counters jump from 0 to their old totals.
