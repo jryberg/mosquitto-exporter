@@ -10,6 +10,7 @@ import (
 	"time"
 
 	"crypto/tls"
+	"crypto/x509"
 
 	mqtt "github.com/eclipse/paho.mqtt.golang"
 	"github.com/prometheus/client_golang/prometheus"
@@ -103,6 +104,19 @@ func main() {
 				Sources: cli.EnvVars("MQTT_KEY"),
 			},
 			&cli.StringFlag{
+				Name:    "ca",
+				Aliases: []string{"a"},
+				Usage:   "Location of a CA certificate .pem file used to verify the Mosquitto message broker",
+				Value:   "",
+				Sources: cli.EnvVars("MQTT_CA"),
+			},
+			&cli.BoolFlag{
+				Name:    "insecure-skip-verify",
+				Usage:   "Skip verification of the Mosquitto message broker TLS certificate (insecure)",
+				Value:   false,
+				Sources: cli.EnvVars("MQTT_INSECURE_SKIP_VERIFY"),
+			},
+			&cli.StringFlag{
 				Name:    "client-id",
 				Aliases: []string{"i"},
 				Usage:   "Client id to be used to connect to the Mosquitto message broker",
@@ -154,24 +168,35 @@ func runServer(ctx context.Context, cmd *cli.Command) error {
 		}
 	}
 	// if you have a client certificate you want a key aswell
-	if cmd.String("cert") != "" && cmd.String("key") != "" {
-		keyPair, err := tls.LoadX509KeyPair(cmd.String("cert"), cmd.String("key"))
-		if err != nil {
-			log.Errorf("Failed to load certificate/keypair: %s", err)
+	hasKeyPair := cmd.String("cert") != "" && cmd.String("key") != ""
+	if !hasKeyPair && (cmd.String("cert") != "" || cmd.String("key") != "") {
+		log.Println("Warning: For a client certificate both certificate and private key are needed. Skipping client certificate.")
+	}
+	if hasKeyPair || cmd.String("ca") != "" || cmd.Bool("insecure-skip-verify") {
+		tlsConfig := &tls.Config{}
+		if hasKeyPair {
+			keyPair, err := tls.LoadX509KeyPair(cmd.String("cert"), cmd.String("key"))
+			fatalfOnError(err, "Failed to load certificate/keypair: %s", err)
+			tlsConfig.Certificates = []tls.Certificate{keyPair}
 		}
-		tlsConfig := &tls.Config{
-			Certificates:       []tls.Certificate{keyPair},
-			InsecureSkipVerify: true,
-			ClientAuth:         tls.NoClientCert,
+		if cmd.String("ca") != "" {
+			caPEM, err := os.ReadFile(cmd.String("ca"))
+			fatalfOnError(err, "Failed to read CA certificate: %s", err)
+			caPool := x509.NewCertPool()
+			if !caPool.AppendCertsFromPEM(caPEM) {
+				log.Fatalf("No certificates found in CA file %s", cmd.String("ca"))
+			}
+			tlsConfig.RootCAs = caPool
+		}
+		if cmd.Bool("insecure-skip-verify") {
+			log.Warn("Warning: TLS certificate verification of the broker is disabled")
+			tlsConfig.InsecureSkipVerify = true
 		}
 		opts.SetTLSConfig(tlsConfig)
 		if !strings.HasPrefix(cmd.String("endpoint"), "ssl://") &&
 			!strings.HasPrefix(cmd.String("endpoint"), "tls://") {
 			log.Println("Warning: To use TLS the endpoint URL will have to begin with 'ssl://' or 'tls://'")
 		}
-	} else if (cmd.String("cert") != "" && cmd.String("key") == "") ||
-		(cmd.String("cert") == "" && cmd.String("key") != "") {
-		log.Println("Warning: For TLS to work both certificate and private key are needed. Skipping TLS.")
 	}
 
 	opts.OnConnect = func(client mqtt.Client) {

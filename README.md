@@ -37,6 +37,8 @@ GLOBAL OPTIONS:
    --pass value, -p value          Password for the User on the Mosquitto message broker [$MQTT_PASS]
    --cert value, -c value          Location of a TLS certificate .pem file for the Mosquitto message broker [$MQTT_CERT]
    --key value, -k value           Location of a TLS private key .pem file for the Mosquitto message broker [$MQTT_KEY]
+   --ca value, -a value            Location of a CA certificate .pem file used to verify the Mosquitto message broker [$MQTT_CA]
+   --insecure-skip-verify          Skip verification of the Mosquitto message broker TLS certificate (insecure) [$MQTT_INSECURE_SKIP_VERIFY]
    --client-id value, -i value     Client id to be used to connect to the Mosquitto message broker [$MQTT_CLIENT_ID]
    --reset-metrics, -r             Reset metrics when loosing connection to broker (default: true) [$RESET_METRICS]
    --help, -h                      show help
