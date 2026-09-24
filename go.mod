@@ -2,7 +2,7 @@ module github.com/jryberg/mosquitto-exporter
 
 go 1.26.0
 
-toolchain go1.26.8
+toolchain go1.27.1
 
 require (
 	github.com/eclipse/paho.mqtt.golang v1.5.1
