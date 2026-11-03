@@ -5,7 +5,7 @@ Prometheus exporter for the [Mosquitto MQTT message broker](https://mosquitto.or
 There is a docker image available:
 ```
 docker run \
-  -p 9234:9234 jryberg/mosquitto-exporter:v0.8.0 \
+  -p 9234:9234 jryberg/mosquitto-exporter:v0.8.1 \
   --endpoint tcp://mosquitto:1883
 ```
 
@@ -20,7 +20,7 @@ USAGE:
    mosquitto-exporter [global options] command [command options] [arguments...]
 
 VERSION:
-   v0.8.0 (2bbf83770521c99ccd126b4c28ae76332754ff22), go1.27.3
+   v0.8.1 (9ea0c220446b73a69b947b6868abd9901d53adca), go1.27.3
 
 AUTHORS:
    Johan Ryberg <johan@securit.se>
