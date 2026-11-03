@@ -1,3 +1,7 @@
 trust:
   packages:
     - docker:library/golang
+    - gomod:golang.org/x/net
+    - gomod:golang.org/x/sys
+    - gomod:golang.org/x/text
+    - gomod:golang.org/x/exp
