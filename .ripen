@@ -1,0 +1,3 @@
+trust:
+  packages:
+    - docker:library/golang
