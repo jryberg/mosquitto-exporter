@@ -1,4 +1,4 @@
-FROM       debian:trixie-slim@sha256:d7e12182ce18b85b93007c1dedf31f2d29e01ccf3182cc4017c709b6259bc132
+FROM       debian:trixie-slim@sha256:8aa5a7bf5a1955bddbe7d74fcdd0b91ab30e74362a8b73af672b0481b35b44a0
 LABEL      source_repository="https://github.com/jryberg/mosquitto-exporter"
 ARG        TARGETPLATFORM
 COPY       $TARGETPLATFORM/mosquitto-exporter /mosquitto_exporter
